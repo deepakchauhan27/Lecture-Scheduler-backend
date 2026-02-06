@@ -3,11 +3,11 @@ import {
   addLecture,
   getInstructorLectures
 } from "../controllers/lectureController.js";
-import auth from "../middleware/authmiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", auth, addLecture);
-router.get("/my", auth, getInstructorLectures);
+router.post("/", authMiddleware, addLecture);
+router.get("/my", authMiddleware, getInstructorLectures);
 
 export default router;

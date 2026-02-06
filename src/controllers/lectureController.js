@@ -1,28 +1,63 @@
 import Lecture from "../models/Lecture.js";
 import checkClash from "../utils/checkClash.js";
 
+/* ================= ADD LECTURE ================= */
 export const addLecture = async (req, res) => {
-  const { courseId, instructorId, date } = req.body;
+  try {
+    const { course, instructor, date, startTime, endTime } = req.body;
 
-  const clash = await checkClash(instructorId, date);
-  if (clash) {
-    return res.status(400).json({
-      message: "Instructor already assigned on this date"
+    // ✅ Validate required fields
+    if (!course || !instructor || !date) {
+      return res.status(400).json({
+        message: "Course, Instructor and Date are required",
+      });
+    }
+
+    // ✅ Check instructor clash
+    const clash = await checkClash(instructor, date, startTime, endTime);
+    if (clash) {
+      return res.status(400).json({
+        message: "Instructor already has a lecture scheduled at this time",
+      });
+    }
+
+    // ✅ Create lecture with correct schema fields
+    const lecture = await Lecture.create({
+      course,
+      instructor,
+      date,
+      startTime,
+      endTime,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Lecture scheduled successfully",
+      lecture,
+    });
+  } catch (error) {
+    console.error("Add Lecture Error:", error);
+    return res.status(500).json({
+      message: "Failed to schedule lecture",
+      error: error.message,
     });
   }
-
-  const lecture = await Lecture.create({
-    course: courseId,
-    instructor: instructorId,
-    date
-  });
-
-  res.status(201).json(lecture);
 };
 
+/* ================= INSTRUCTOR LECTURES ================= */
 export const getInstructorLectures = async (req, res) => {
-  const lectures = await Lecture.find({ instructor: req.user.id })
-    .populate("course", "name");
+  try {
+    const lectures = await Lecture.find({
+      instructor: req.user.id,
+    })
+      .populate("course", "name")
+      .sort({ date: 1 });
 
-  res.json(lectures);
+    return res.status(200).json(lectures);
+  } catch (error) {
+    console.error("Get Instructor Lectures Error:", error);
+    return res.status(500).json({
+      message: "Failed to fetch instructor lectures",
+    });
+  }
 };

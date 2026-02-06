@@ -1,11 +1,15 @@
 import express from "express";
-import { addCourse, getCourses } from "../controllers/courseController.js";
-import auth from "../middleware/authmiddleware.js";
-import role from "../middleware/roleMiddleware.js";
+import {
+  addCourse,
+  getCourses
+} from "../controllers/courseController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", auth, role("admin"), addCourse);
-router.get("/", auth, getCourses);
+// admin only
+router.post("/", authMiddleware, roleMiddleware("admin"), addCourse);
+router.get("/", authMiddleware, getCourses);
 
 export default router;
