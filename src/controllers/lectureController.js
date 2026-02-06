@@ -47,6 +47,12 @@ export const addLecture = async (req, res) => {
 /* ================= INSTRUCTOR LECTURES ================= */
 export const getInstructorLectures = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        message: "Unauthorized access",
+      });
+    }
+
     const lectures = await Lecture.find({
       instructor: req.user.id,
     })
@@ -58,6 +64,7 @@ export const getInstructorLectures = async (req, res) => {
     console.error("Get Instructor Lectures Error:", error);
     return res.status(500).json({
       message: "Failed to fetch instructor lectures",
+      error: error.message,
     });
   }
 };

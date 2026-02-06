@@ -1,15 +1,14 @@
 import express from "express";
 import { getInstructors } from "../controllers/userController.js";
 import authMiddleware from "../middleware/authmiddleware.js";
-import role from "../middleware/roleMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js"; // FIXED: was "role"
 
 const router = express.Router();
 
-// Admin can view instructors
 router.get(
   "/instructors",
   authMiddleware,
-  role("admin"),
+  roleMiddleware("admin"),
   getInstructors
 );
 

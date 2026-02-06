@@ -11,6 +11,7 @@ const router = express.Router();
 
 // admin only
 router.post("/", authMiddleware, roleMiddleware("admin"), addCourse);
-router.get("/", authMiddleware, getCourses);
+router.get("/", authMiddleware, roleMiddleware("admin"), getCourses);
+
 
 export default router;

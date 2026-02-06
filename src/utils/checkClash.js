@@ -1,13 +1,18 @@
 import Lecture from "../models/Lecture.js";
 
 const checkClash = async (instructor, date, startTime, endTime) => {
-  return await Lecture.findOne({
+  const existing = await Lecture.findOne({
     instructor,
     date,
     $or: [
-      { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+      {
+        startTime: { $lt: endTime },
+        endTime: { $gt: startTime }
+      }
     ]
   });
+  
+  return existing;
 };
 
 export default checkClash;
