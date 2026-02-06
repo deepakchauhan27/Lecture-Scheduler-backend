@@ -3,7 +3,7 @@ import {
   addCourse,
   getCourses
 } from "../controllers/courseController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/authmiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
 
